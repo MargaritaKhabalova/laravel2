@@ -19,4 +19,13 @@ Route::get('/getusers/', 'UserController@getUsers');
 Route::post('/addusers/', 'UserController@addUsers');
 Route::patch('/updateusers/', 'UserController@updateUsers');
 Route::get('/registrusers/','UserController@registerUsers');
-Route::get('/signusers/','UserController@signUsers');	
+Route::get('/signusers/','UserController@signUsers');
+
+
+Route::get('/gethops/', 'HopeController@getHopes'); 
+Route::post('/addhops/', 'HopeController@addHopes'); 
+Route::post('/deletehops/', 'HopeController@deleteHopes');
+
+Route::get('/registerusers/','UserController@registerUser');
+Route::get('/loginusers/','UserController@loginUsers');
+Route::get('/logoutusers/','UserController@logoutUsers');

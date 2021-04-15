@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 use App\User;
 
 class UserController extends Controller
@@ -24,7 +25,7 @@ class UserController extends Controller
         $dap = $user->save();
         if($dap)
         return "ALL OK";
-    return "ALL NOT OK";
+    	return "ALL NOT OK";
     }
 
     public function updateUsers(Request $hme)
@@ -78,6 +79,7 @@ class UserController extends Controller
 
             return response()->json($res);
     	}
+
 	public function signUsers(Request $req)
     {
     	$user= User::where('phone_number', $req->phone_number)->first();
@@ -90,4 +92,60 @@ class UserController extends Controller
                 
         return response()->json('Пользователь успешно авторизован');
     }
+   public function registerUser(Request $req)
+    {
+        $valid = Validator::make($req->all(),
+        [
+        'name' => 'required',
+        'last_name' => 'required',
+        'age' => 'required',
+        'phone_number' => 'required',
+        'password' => 'required',
+        ]);
+
+        if ($valid->fails())
+            return response()->json($valid->errors());
+
+        $user = User::create($req->all());
+        return response()->json('А ты хорош');
+    }
+        
+
+       
+        public function loginUsers(Request $req) 
+    	{
+        $valid = Validator::make($req->all(), 
+        	[
+            'phone_number' => 'required',
+            'password' => 'required',
+        	]);
+
+        if ($valid->fails()) {
+            return response()->json($valid->errors());
+        }
+
+        if($user = User::where('phone_number', $req->phone_number)->first())
+        {
+            if ($req->password == $user->password)
+            {
+                $user->api_token=str_random(50);
+                $user->save();
+                return response()->json('Авторизацияпрошла успешно, api_token:'. $user->api_token);
+            }
+        }
+                return response()->json('Логин или пароль введены неверно, api_token:'. $user->api_token);
+    }
+
+        
+        public function logoutUsers(Request $req)
+        {
+            $user = User::where("api_token",$req->api_token)->first();
+
+            if($user)
+            {
+                $user->api_token = null;
+                $user->save();
+                return response()->json('Разлогирование прошло успешно');
+            }
+        }
 }

@@ -14,11 +14,12 @@ class User extends Authenticatable
    public $table = "tea";
    protected $fillable = 
     [
-        'name', 'last_name', 'age',  'phone_number', 'password'
+        'name', 'last_name', 'age',  'phone_number', 'password', 'api_token'
     ];
             protected $rqe =
     [
-            'password'
+            'password', 'phone_number'
     ];
+
 
 }
